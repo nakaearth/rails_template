@@ -81,7 +81,7 @@ rake 'db:migrate'
 # config setting
 application do
   %Q{
-    config.generate do |g|
+    config.generators do |g|
       g.orm :active_record
       g.template_engine :erb
       g.test_framework  :rspec, :fixture => true

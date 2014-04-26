@@ -10,6 +10,8 @@ gem 'json'
 gem 'kaminari'
 gem 'dalli'
 gem 'whenever'
+gem 'simple_form'
+
 gem_group :development, :test do
   gem 'rspec-rails'
   gem 'rake_shared_context'
@@ -52,34 +54,50 @@ gem_group :development do
   gem 'guard-spring' 
 end
 # run bundle install
-run_bundle
+#run_bundle
+run "bundle install --path vendor/bundle"
 
 # rspec
 puts "--file generate.--"
 puts "rspec file generate"
 generate 'rspec:install' 
 remove_dir 'test'
+append_to_file '.rspec' do
+  "--format documentation \n--format ParalellTest::Rspec::FailuresLogger --out tmp/fail_spec.log"
+end
+
 # guard
 puts "guard file init"
 run "bundle exec guard init"
 
-#use bootstrapt
-use_bootstrap = if yes?('Use Bootstrapt?')
-                  uncomment_lines 'Gemfile', "gem 'therubyracer'"
-                  gem 'less-rails'
-                  gem 'twitter-bootstrap-rails', :gti => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
-                  true
-                else 
-                  false
-                end
-if use_bootstrap
-  generate 'bootstrap:install', 'less'
-  if yes?('Use responsive layout?')
-    generate 'bootstrap:layout', 'application fluid'
-  else
-    generate 'bootstrap:layout', 'application fixed'
-  end
+# simple form
+generate 'simple_form:install'
+
+# devise generate
+generate 'devise:install'
+generate  'devise user'
+rake 'db:migrate'
+
+# config setting
+application do
+  %Q{
+    config.generate do |g|
+      g.orm :active_record
+      g.template_engine :erb
+      g.test_framework  :rspec, :fixture => true
+      g.fixture_replacement :factory_girl, :dir => "spec/factories"
+      g.view_specs true
+      g.controller_specs true
+      g.routing_specs true
+      g.helper_specs true
+      g.request_specs true
+      g.assets true
+      g.helper true
+    end
+  }
 end
+
+environment 'config.server_static_assets=true', env: 'production'
 
 puts "git init!!"
 git :init

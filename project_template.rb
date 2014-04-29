@@ -3,6 +3,7 @@ run 'rm public/index.html'
 run 'rm public/images/rails.png'
 
 puts "Gemfile edit!!"
+#gem 'rails', '4.1.0'
 gem 'devise'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
@@ -53,6 +54,27 @@ gem_group :development do
   gem 'guard-rspec', ' ~> 0.4.2'
   gem 'guard-spring' 
 end
+# use heroku?
+use_heroku = if yes?('Use heroku?')
+               gem_group :production do
+                 gem 'pg'
+                 gem 'foreman'
+                 gem 'rails_12factor'
+                 gem 'bugsnag'
+               end
+               gem 'heroku'
+             else
+               puts 'heroku not useed.'
+             end
+
+if use_heroku
+#  run 'heroku create '
+end
+
+# APサーバ
+gem 'puma'
+
+
 # run bundle install
 #run_bundle
 run "bundle install --path vendor/bundle"

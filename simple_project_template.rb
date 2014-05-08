@@ -3,15 +3,10 @@ run 'rm public/index.html'
 run 'rm public/images/rails.png'
 
 puts "Gemfile edit!!"
-#gem 'rails', '4.1.0'
-gem 'devise'
-gem 'omniauth-twitter'
-gem 'omniauth-facebook'
 gem 'json'
 gem 'kaminari'
 gem 'dalli'
 gem 'whenever'
-gem 'simple_form'
 
 gem_group :development, :test do
   gem 'rspec-rails'
@@ -48,26 +43,9 @@ gem_group :development do
   gem 'guard-rspec', ' ~> 0.4.2'
   gem 'guard-spring' 
 end
-# use heroku?
-use_heroku = if yes?('Use heroku?')
-               gem_group :production do
-                 gem 'pg'
-                 gem 'foreman'
-                 gem 'rails_12factor'
-                 gem 'bugsnag'
-               end
-               gem 'heroku'
-             else
-               puts 'heroku not useed.'
-             end
-
-if use_heroku
-#  run 'heroku create '
-end
 
 # APサーバ
 gem 'puma'
-
 
 # run bundle install
 #run_bundle
@@ -82,14 +60,6 @@ remove_dir 'test'
 # guard
 puts "guard file init"
 run "bundle exec guard init"
-
-# simple form
-generate 'simple_form:install'
-
-# devise generate
-generate 'devise:install'
-generate  'devise user'
-rake 'db:migrate'
 
 # config setting
 application do
